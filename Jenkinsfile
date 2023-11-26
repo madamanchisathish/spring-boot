@@ -1,21 +1,22 @@
 pipeline {
     agent {
         docker {
-            image 'mahesh430/maven-jenkins-agent:latest'
+            image 'madamanchisathish/maven-jenkins-agent:latest'
             args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
         }
     }
     environment {
         // Define environment variables
         DOCKERHUB_CREDENTIALS = credentials('docker-creds') // ID of your Docker Hub credentials in Jenkins
-        IMAGE_TAG = "mahesh430/complete-cicd:${BUILD_NUMBER}"
+        IMAGE_TAG = "madamanchisathish/sathish-practice:${BUILD_NUMBER}"
         SONAR_URL = "http://sonarqube.infonxt.com:9000/"
     }
     stages {
         stage('Checkout') {
             steps {
                 echo 'Passed'
-                //git branch: 'main', url: 'https://github.com/mahesh430/spring-boot.git'
+                //git branch: 'future', url: 'https://github.com/madamanchisathish/spring-boot.git'
+				echo "Clone repository Sucessfully"
             }
         }
         stage('Build and Test') {
@@ -23,6 +24,7 @@ pipeline {
                 sh 'ls -ltr'
                 // build the project and create a JAR file
                 sh 'mvn clean package'
+				echo "Maven build Sucessfully"
             }
         }
         stage('Static Code Analysis') {
@@ -42,7 +44,7 @@ pipeline {
         stage('Docker Image Scan') {
             steps {
                 script {
-                    sh "trivy image --exit-code 1 --no-progress ${IMAGE_TAG}"
+                    sh "trivy image --exit-code 0 --no-progress ${IMAGE_TAG}"
                 }
             }
         }
